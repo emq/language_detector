@@ -1,30 +1,30 @@
 require 'yaml'
 require 'jcode'
+
 $KCODE = 'u' if RUBY_VERSION < '1.9'
 
 class LanguageDetector
   def detect text
     @profiles ||= load_model
 
-    p = Profile.new("")
-    p.init_with_string text
+    p = Profile.new(:text => text)
     best_profile = nil
     best_distance = nil
-    @profiles.each {|profile|
+
+    @profiles.each do |profile|
       distance = profile.compute_distance(p)
 
-      if !best_distance || distance < best_distance
+      if !best_distance or distance < best_distance
         best_distance = distance
         best_profile = profile
       end
-    }
-    return best_profile.name
+    end
+
+    best_profile.name
   end
 
   def self.train
-
     # For a full list of ISO 639 language tags visit:
-
     # http:#www.loc.gov/standards/iso639-2/englangn.html
 
     #LARGE profiles follow:
@@ -115,95 +115,87 @@ class LanguageDetector
 end
 
 class Profile
-
+  LIMIT = 1500
   PUNCTUATIONS = [?\n, ?\r, ?\t, ?\s, ?!, ?", ?#, ?$, ?%, ?&, ?', ?(, ?), ?*, ?+, ?,, ?-, ?., ?/,
-  ?0, ?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9,
-  ?:, ?;, ?<, ?=, ?>, ??, ?@, ?[, ?\\, ?], ?^, ?_, ?`, ?{, ?|, ?}, ?~]
-
-  LIMIT = 2000
-
-  def compute_distance other_profile
-    distance = 0
-    other_profile.ngrams.each {|k, v|
-      n = @ngrams[k]
-      if n
-        distance += (v - n).abs
-      else
-        distance += Profile::LIMIT
-      end
-    }
-    return distance
-  end
+    ?0, ?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?:, ?;, ?<, ?=, ?>, ??, ?@, ?[, ?\\, ?], ?^, ?_, ?`, ?{, ?|, ?}, ?~]
 
   attr_reader :ngrams, :name
 
-  def initialize(name)
-    @name = name
-    @puctuations = {}
-    PUNCTUATIONS.each {|p| @puctuations[p] = 1}
+  def initialize(*args)
+    args = args.first
+
+    @punctuations = Hash[*PUNCTUATIONS.map{|k| [k,1]}.flatten]
+    @name = args[:name] || ""
     @ngrams = {}
+
+    init_with_string(args[:text]) if args[:text]
+    init_with_file(args[:file]) if args[:file]
   end
 
-  def init_with_file filename
+  def compute_distance(other_profile)
+    distance = 0
+    other_profile.ngrams.each do |k, v|
+      n = @ngrams[k]
+      if n = @ngrams[k]
+        distance += (v - n).abs
+      else
+        distance += LIMIT
+      end
+    end
+
+    distance
+  end
+
+  def init_with_file(filename)
     ngram_count = {}
 
     path = File.expand_path(File.join(File.dirname(__FILE__), "training_data/" + filename))
+    File.open(path).each_line {|line| generate_ngrams(line, ngram_count) }
     puts "training with " + path
-    File.open(path).each_line{ |line|
-      _init_with_string line, ngram_count
-    }
 
-    a = ngram_count.sort {|a,b| b[1] <=> a[1]}
-    i = 1
-    a.each {|t|
-      @ngrams[t[0]] = i
-      i += 1
+    ngram_count.sort {|a,b| b[1] <=> a[1]}.each_with_index do |t, i|
+      ngrams[t[0]] = (i+1)
       break if i > LIMIT
-    }
+    end
   end
 
-  def init_with_string str
+  def init_with_string(str)
     ngram_count = {}
+    generate_ngrams(str, ngram_count)
 
-    _init_with_string str, ngram_count
-
-    a = ngram_count.sort {|a,b| b[1] <=> a[1]}
-    i = 1
-    a.each {|t|
-      @ngrams[t[0]] = i
-      i += 1
+    ngram_count.sort {|a,b| b[1] <=> a[1]}.each_with_index do |t, i|
+      @ngrams[t[0]] = (i+1)
       break if i > LIMIT
-    }
+    end
   end
 
-  def _init_with_string str, ngram_count
+  def generate_ngrams(str, ngram_count)
     tokens = tokenize(str)
-    tokens.each {|token|
-      count_ngram token, 2, ngram_count
-      count_ngram token, 3, ngram_count
-      count_ngram token, 4, ngram_count
-      count_ngram token, 5, ngram_count
-    }
+    tokens.each do |token|
+      count_ngram(token, 2, ngram_count)
+      count_ngram(token, 3, ngram_count)
+      count_ngram(token, 4, ngram_count)
+      count_ngram(token, 5, ngram_count)
+    end
   end
 
   def tokenize str
     tokens = []
     s = ''
-    str.each_byte {|b|
-      if is_puctuation?(b)
+    str.each_byte do |b|
+      if is_punctuation?(b)
         tokens << s unless s.empty?
         s = ''
       else
         s << b
       end
-    }
+    end
+
     tokens << s unless s.empty?
-    return tokens
+    tokens
   end
 
-  def is_puctuation? b
-    @puctuations[b]
-  end
+  def is_punctuation?(b); @punctuations.has_key?(b); end
 
   def count_ngram token, n, counts
     token = "_#{token}#{'_' * (n-1)}" if n > 1 && token.jlength >= n
