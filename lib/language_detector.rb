@@ -210,10 +210,7 @@ class Profile
   def generate_ngrams(str, ngram_count)
     tokens = tokenize(str)
     tokens.each do |token|
-      count_ngram(token, 2, ngram_count)
-      count_ngram(token, 3, ngram_count)
-      count_ngram(token, 4, ngram_count)
-      count_ngram(token, 5, ngram_count)
+      2.upto(5) { |n| count_ngram(token, n, ngram_count) }
     end
   end
 
@@ -237,16 +234,12 @@ class Profile
 
   def count_ngram(token, n, counts)
     token = "_#{token}#{'_' * (n-1)}" if n > 1 && token.length >= n
-    i = 0
-    while i + n <= token.length
+    
+    n.upto(token.length).with_index do |t, i|
       s = ''
-      j = 0
-      while j < n
-        s << token[i+j]
-        j += 1
-      end
-      counts[s] = counts[s] ? counts[s] +=1 : 1
-      i += 1
+
+      0.upto(n-1) { |j| s << token[i+j] }
+      counts[s] = counts.has_key?(s) ? counts[s]+=1 : 1
     end
 
     counts
