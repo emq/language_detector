@@ -100,7 +100,7 @@ class LanguageDetector
     profiles = []
     training_data.each do |data|
       p = Profile.new(:name => data[0], :file => data[1])
-      profiles << p
+      profiles.push p
     end
     puts 'saving model...'
     filename = File.expand_path(File.join(File.dirname(__FILE__), "model.yml"))
@@ -115,8 +115,10 @@ end
 
 class Profile
   LIMIT = 1500
-  PUNCTUATIONS = [?\n, ?\r, ?\t, ?\s, ?!, ?", ?#, ?$, ?%, ?&, ?', ?(, ?), ?*, ?+, ?,, ?-, ?., ?/,
-    ?0, ?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?:, ?;, ?<, ?=, ?>, ??, ?@, ?[, ?\\, ?], ?^, ?_, ?`, ?{, ?|, ?}, ?~]
+  PUNCTUATIONS = [
+    ?\n, ?\r, ?\t, ?\s, ?!, ?", ?#, ?$, ?%, ?&, ?', ?(, ?), ?*, ?+, ?,, ?-, ?., ?/,
+    ?0, ?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?:, ?;, ?<, ?=, ?>, ??, ?@, ?[, ?\\, ?], ?^, ?_, ?`, ?{, ?|, ?}, ?~
+   ]
 
   attr_reader :ngrams, :name
 
@@ -183,14 +185,14 @@ class Profile
     s = ''
     str.each_byte do |b|
       if is_punctuation?(b)
-        tokens << s unless s.empty?
+        tokens.push s unless s.empty?
         s = ''
       else
         s << b
       end
     end
 
-    tokens << s unless s.empty?
+    tokens.push s unless s.empty?
     tokens
   end
 
