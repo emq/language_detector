@@ -2,7 +2,7 @@ require 'yaml'
 
 if RUBY_VERSION < '1.9'
   require 'jcode'
-  $KCODE = 'u' if RUBY_VERSION < '1.9'
+  $KCODE = 'u'
 end
 
 class LanguageDetector
@@ -152,17 +152,13 @@ end
 
 class Profile
   LIMIT = 1500
-  PUNCTUATIONS = [
-    ?\n, ?\r, ?\t, ?\s, ?!, ?", ?#, ?$, ?%, ?&, ?', ?(, ?), ?*, ?+, ?,, ?-, ?., ?/,
-    ?0, ?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?:, ?;, ?<, ?=, ?>, ??, ?@, ?[, ?\\, ?], ?^, ?_, ?`, ?{, ?|, ?}, ?~
-  ]
+  PUNCTUATION_REGEX = /[\W^_\d]+/
 
   attr_accessor :ngrams, :name
 
   def initialize(*args)
     args = args.first
 
-    @punctuations = Hash[*PUNCTUATIONS.map{|k| [k,1]}.flatten]
     @name = args[:name] || ""
     @ngrams = {}
 
@@ -214,23 +210,8 @@ class Profile
     end
   end
 
-  def tokenize str
-    tokens = []
-    s = ''
-    str.each_byte do |b|
-      if is_punctuation?(b)
-        tokens.push s unless s.empty?
-        s = ''
-      else
-        s << b
-      end
-    end
-
-    tokens.push s unless s.empty?
-    tokens
-  end
-
-  def is_punctuation?(b); @punctuations.has_key?(b); end
+  def tokenize(str) str.split(PUNCTUATION_REGEX); end
+  def is_punctuation?(char); char =~ PUNCTUATION_REGEX; end
 
   def count_ngram(token, n, counts)
     token = "_#{token}#{'_' * (n-1)}" if n > 1 && token.length >= n
@@ -244,7 +225,6 @@ class Profile
 
     counts
   end
-
 end
 
 if $0 == __FILE__

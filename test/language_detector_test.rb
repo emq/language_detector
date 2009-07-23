@@ -5,10 +5,10 @@ require File.dirname(__FILE__) + '/../lib/language_detector'
 class ProfileTest < Test::Unit::TestCase
   def test_is_punctuation
     p = Profile.new(:name => "test")
-    assert p.is_punctuation?(?,)
-    assert p.is_punctuation?(?.)
-    assert !p.is_punctuation?(?A)
-    assert !p.is_punctuation?(?a)
+    assert p.is_punctuation?(',')
+    assert p.is_punctuation?('.')
+    assert !p.is_punctuation?('A')
+    assert !p.is_punctuation?('a')
   end
 
   def test_tokenize
