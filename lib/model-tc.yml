@@ -1010,7 +1010,7 @@
     32: 1
     10: 1
 - !ruby/object:Profile 
-  name: amharic-utf
+  name: amharic
   ngrams: 
     ? !binary "iI1f\n"
     : 319
@@ -2248,7 +2248,7 @@
     32: 1
     10: 1
 - !ruby/object:Profile 
-  name: arabic-iso8859_6
+  name: arabic
   ngrams: 
     "\xF2...": 392
     ? !binary "2YbYpw==\n"
@@ -3470,7 +3470,7 @@
     32: 1
     10: 1
 - !ruby/object:Profile 
-  name: arabic-windows1256
+  name: arabic
   ngrams: 
     ? !binary "1O0=\n"
     : 297
@@ -6368,7 +6368,7 @@
     32: 1
     10: 1
 - !ruby/object:Profile 
-  name: belarus-windows1251
+  name: belarus
   ngrams: 
     ? !binary "5O4=\n"
     : 352
@@ -8492,7 +8492,7 @@
     32: 1
     10: 1
 - !ruby/object:Profile 
-  name: bulgarian-iso8859_5
+  name: bulgarian
   ngrams: 
     ? !binary "2OHi1d0=\n"
     : 388
@@ -10182,7 +10182,7 @@
     32: 1
     10: 1
 - !ruby/object:Profile 
-  name: chinese-big5
+  name: chinese
   ngrams: 
     ? !binary "pOg=\n"
     : 341
@@ -11220,7 +11220,7 @@
     32: 1
     10: 1
 - !ruby/object:Profile 
-  name: chinese-gb2312
+  name: chinese
   ngrams: 
     ? !binary "X7XY\n"
     : 379
@@ -12468,7 +12468,7 @@
     32: 1
     10: 1
 - !ruby/object:Profile 
-  name: croatian-ascii
+  name: croatian
   ngrams: 
     oj_: 386
     jen: 290
@@ -12918,7 +12918,7 @@
     32: 1
     10: 1
 - !ruby/object:Profile 
-  name: czech-iso8859_2
+  name: czech
   ngrams: 
     nsk: 397
     ? !binary "dulf\n"
@@ -19072,7 +19072,7 @@
     32: 1
     10: 1
 - !ruby/object:Profile 
-  name: greek-iso8859-7
+  name: greek
   ngrams: 
     ;": 391
     ? !binary "9OfyXw==\n"
@@ -20286,7 +20286,7 @@
     32: 1
     10: 1
 - !ruby/object:Profile 
-  name: hebrew-iso8859_8
+  name: hebrew
   ngrams: 
     ? !binary "9+w=\n"
     : 373
@@ -25416,7 +25416,7 @@
     32: 1
     10: 1
 - !ruby/object:Profile 
-  name: japanese-euc_jp
+  name: japanese
   ngrams: 
     ? !binary "o9Q=\n"
     : 345
@@ -26630,7 +26630,7 @@
     32: 1
     10: 1
 - !ruby/object:Profile 
-  name: japanese-shift_jis
+  name: japanese
   ngrams: 
     ? !binary "U4I=\n"
     : 390
@@ -37932,7 +37932,7 @@
     32: 1
     10: 1
 - !ruby/object:Profile 
-  name: russian-iso8859_5
+  name: russian
   ngrams: 
     ? !binary "3d7Z\n"
     : 358
@@ -39132,7 +39132,7 @@
     32: 1
     10: 1
 - !ruby/object:Profile 
-  name: russian-koi8_r
+  name: russian
   ngrams: 
     ? !binary "yc8=\n"
     : 368
@@ -40364,7 +40364,7 @@
     32: 1
     10: 1
 - !ruby/object:Profile 
-  name: russian-windows1251
+  name: russian
   ngrams: 
     ? !binary "6P8=\n"
     : 334
@@ -42968,7 +42968,7 @@
     32: 1
     10: 1
 - !ruby/object:Profile 
-  name: serbian-ascii
+  name: serbian
   ngrams: 
     _Vins: 358
     pri: 346
@@ -43418,7 +43418,7 @@
     32: 1
     10: 1
 - !ruby/object:Profile 
-  name: slovak-ascii
+  name: slovak
   ngrams: 
     nd: 240
     A: 220
@@ -43868,7 +43868,7 @@
     32: 1
     10: 1
 - !ruby/object:Profile 
-  name: slovak-windows1250
+  name: slovak
   ngrams: 
     ? !binary "4XQ=\n"
     : 383
@@ -44454,7 +44454,7 @@
     32: 1
     10: 1
 - !ruby/object:Profile 
-  name: slovenian-ascii
+  name: slovenian
   ngrams: 
     rt: 372
     e.: 352
@@ -44904,7 +44904,7 @@
     32: 1
     10: 1
 - !ruby/object:Profile 
-  name: slovenian-iso8859_2
+  name: slovenian
   ngrams: 
     nd: 329
     nsk: 249
@@ -50234,7 +50234,7 @@
     32: 1
     10: 1
 - !ruby/object:Profile 
-  name: ukrainian-koi8_u
+  name: ukrainian
   ngrams: 
     ? !binary "X9HL\n"
     : 205
@@ -52748,7 +52748,7 @@
     32: 1
     10: 1
 - !ruby/object:Profile 
-  name: yiddish-utf
+  name: yiddish
   ngrams: 
     ? !binary "oNeZ1w==\n"
     : 371

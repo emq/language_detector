@@ -6,9 +6,15 @@ if RUBY_VERSION < '1.9'
 end
 
 class LanguageDetector
-  def detect text
-    @profiles ||= load_model('fm')
 
+  # Supports two ngram databases:
+  # - fm - built from scratch texts included with gem
+  # - tc - textcat ngram database
+  def initialize(type='tc')
+    @profiles = load_model(type)
+  end
+
+  def detect text
     p = Profile.new(:text => text)
     best_profile = nil
     best_distance = nil
@@ -45,7 +51,7 @@ class LanguageDetector
       end
       lang.close
 
-      p = Profile.new(:name => language.split('/').last)
+      p = Profile.new(:name => language.split('/').last.split('-').first)
       p.ngrams = ngram
 
       profiles.push p

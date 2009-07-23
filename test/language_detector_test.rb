@@ -62,8 +62,8 @@ class LanguageDetectorTest < Test::Unit::TestCase
     assert_equal "dutch", d.detect("tegen de kabinetsplannen. Een speciaal in het leven geroepen Landelijk")
     assert_equal "danish", d.detect("viksomhed, 58 pct. har et arbejde eller er under uddannelse, 76 pct. forsørges ikke længere af Kolding")
     assert_equal "czech", d.detect("datují rokem 1862.  Naprosto zakázán byl v pocitech smutku, beznadìje èi jiné")
-    assert_equal "norwegian", d.detect("hånd på den enda hvitere restaurant-duken med en bevegelse så forfinet")
+    assert_equal "norwegian", d.detect("hånd på den enda hvitere restaurant-duken med en bevegelse så forfinet bevegelse")
     assert_equal "portuguese", d.detect("popular. Segundo o seu biógrafo, a Maria Adelaide auxiliava muita gente")
-    assert_equal "english", d.detect("TaffyDB finders looking nice so far!")
+    assert_equal "english", d.detect("TaffyDB finders looking nice so far! Testing this long sentence.")
   end
 end
