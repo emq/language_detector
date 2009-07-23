@@ -1,7 +1,9 @@
 require 'yaml'
-require 'jcode'
 
-$KCODE = 'u' if RUBY_VERSION < '1.9'
+if RUBY_VERSION < '1.9'
+  require 'jcode'
+  $KCODE = 'u' if RUBY_VERSION < '1.9'
+end
 
 class LanguageDetector
   def detect text
@@ -195,7 +197,7 @@ class Profile
   def is_punctuation?(b); @punctuations.has_key?(b); end
 
   def count_ngram(token, n, counts)
-    token = "_#{token}#{'_' * (n-1)}" if n > 1 && token.jlength >= n
+    token = "_#{token}#{'_' * (n-1)}" if n > 1 && token.length >= n
     i = 0
     while i + n <= token.length
       s = ''
