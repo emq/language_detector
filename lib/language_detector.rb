@@ -7,7 +7,7 @@ end
 
 class LanguageDetector
   def detect text
-    @profiles ||= load_model
+    @profiles ||= load_model('fm')
 
     p = Profile.new(:text => text)
     best_profile = nil
@@ -25,7 +25,38 @@ class LanguageDetector
     best_profile.name
   end
 
-  def self.train
+  def self.train_tc
+    profiles = []
+    languages = Dir.glob("textcat_ngrams/*.lm").collect {|l| l.gsub(/\.lm$/,'')}.sort
+
+    languages.each do |language|
+      ngram = {}
+      rang = 1
+
+      lang = File.open("#{language}.lm", "r")
+      lang.each_line do |line|
+
+        line = line.chomp
+        if line =~ /^[^0-9\s]+/o
+          ngram[line.chomp.split(/\t/).first] = rang
+          rang += 1
+        end
+
+      end
+      lang.close
+
+      p = Profile.new(:name => language.split('/').last)
+      p.ngrams = ngram
+
+      profiles.push p
+    end
+
+    puts 'saving model...'
+    filename = File.expand_path(File.join(File.dirname(__FILE__), "model-tc.yml"))
+    File.open(filename, 'w') {|f| YAML.dump(profiles, f)}
+  end
+
+  def self.train_fm
     # For a full list of ISO 639 language tags visit:
     # http:#www.loc.gov/standards/iso639-2/englangn.html
 
@@ -99,16 +130,16 @@ class LanguageDetector
 
     profiles = []
     training_data.each do |data|
-      p = Profile.new(:name => data[0], :file => data[1])
+      p = Profile.new(:name => data.last, :file => data[1])
       profiles.push p
     end
     puts 'saving model...'
-    filename = File.expand_path(File.join(File.dirname(__FILE__), "model.yml"))
+    filename = File.expand_path(File.join(File.dirname(__FILE__), "model-fm.yml"))
     File.open(filename, 'w') {|f| YAML.dump(profiles, f)}
   end
 
-  def load_model
-    filename = File.expand_path(File.join(File.dirname(__FILE__), "model.yml"))
+  def load_model(name)
+    filename = File.expand_path(File.join(File.dirname(__FILE__), "model-#{name}.yml"))
     @profiles = YAML.load_file(filename)
   end
 end
@@ -118,9 +149,9 @@ class Profile
   PUNCTUATIONS = [
     ?\n, ?\r, ?\t, ?\s, ?!, ?", ?#, ?$, ?%, ?&, ?', ?(, ?), ?*, ?+, ?,, ?-, ?., ?/,
     ?0, ?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?:, ?;, ?<, ?=, ?>, ??, ?@, ?[, ?\\, ?], ?^, ?_, ?`, ?{, ?|, ?}, ?~
-   ]
+  ]
 
-  attr_reader :ngrams, :name
+  attr_accessor :ngrams, :name
 
   def initialize(*args)
     args = args.first
@@ -218,8 +249,12 @@ class Profile
 end
 
 if $0 == __FILE__
-  if ARGV.length == 1 && 'train' == ARGV[0]
-    LanguageDetector.train
+  if ARGV.length == 1
+    if 'train-fm' == ARGV[0]
+      LanguageDetector.train_fm
+    elsif 'train-tc' == ARGV[0]
+      LanguageDetector.train_tc
+    end
   else
     d = LanguageDetector.new
     p d.detect("what language is it is?")
