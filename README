@@ -1,4 +1,3 @@
-
 == Welcome
 This is a n-gram based language detector, written in ruby. 
 
@@ -6,7 +5,7 @@ For technical details about language detection, I recommend this paper: http://w
 
 == Installation
 sudo gem sources -a http://gems.github.com (you only have to do this once)
-sudo gem install feedbackmine-language_detector
+sudo gem install igrigorik-language_detector
 
 == Usage
 require 'language_detector'
