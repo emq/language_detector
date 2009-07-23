@@ -96,16 +96,13 @@ class LanguageDetector
     ]
 
     profiles = []
-    training_data.each {|data|
-      p = Profile.new data[0]
-      p.init_with_file data[1]
+    training_data.each do |data|
+      p = Profile.new(:name => data[0], :file => data[1])
       profiles << p
-    }
+    end
     puts 'saving model...'
     filename = File.expand_path(File.join(File.dirname(__FILE__), "model.yml"))
-    File.open(filename, 'w') {|f|
-      YAML.dump(profiles, f)
-    }
+    File.open(filename, 'w') {|f| YAML.dump(profiles, f)}
   end
 
   def load_model
@@ -147,7 +144,7 @@ class Profile
   end
 
   def init_with_file(filename)
-    ngram_count = {}
+    ngram_count = Hash.new(0)
 
     path = File.expand_path(File.join(File.dirname(__FILE__), "training_data/" + filename))
     File.open(path).each_line {|line| generate_ngrams(line, ngram_count) }
@@ -168,7 +165,7 @@ class Profile
       break if i > LIMIT
     end
   end
-
+  
   def generate_ngrams(str, ngram_count)
     tokens = tokenize(str)
     tokens.each do |token|
@@ -197,7 +194,7 @@ class Profile
 
   def is_punctuation?(b); @punctuations.has_key?(b); end
 
-  def count_ngram token, n, counts
+  def count_ngram(token, n, counts)
     token = "_#{token}#{'_' * (n-1)}" if n > 1 && token.jlength >= n
     i = 0
     while i + n <= token.length
@@ -207,15 +204,11 @@ class Profile
         s << token[i+j]
         j += 1
       end
-      if counts[s]
-        counts[s] = counts[s] + 1
-      else
-        counts[s] = 1
-      end
+      counts[s] = counts[s] ? counts[s] +=1 : 1
       i += 1
     end
 
-    return counts
+    counts
   end
 
 end
@@ -228,4 +221,3 @@ if $0 == __FILE__
     p d.detect("what language is it is?")
   end
 end
-
