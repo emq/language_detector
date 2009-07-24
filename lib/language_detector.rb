@@ -153,7 +153,6 @@ end
 class Profile
   LIMIT = 1500
   PUNCTUATION_REGEX = /[\W^_\d]+/
-
   attr_accessor :ngrams, :name
 
   def initialize(*args)
@@ -235,7 +234,7 @@ if $0 == __FILE__
       LanguageDetector.train_tc
     end
   else
-    d = LanguageDetector.new
-    p d.detect("what language is it is?")
+    d = LanguageDetector.new()
+    p d.detect("what language is this? can you guess? That's a hard question")
   end
 end
