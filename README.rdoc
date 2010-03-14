@@ -3,10 +3,6 @@
 For technical details about language detection, I recommend this paper:
 - http://www.sfs.uni-tuebingen.de/iscl/Theses/kranig.pdf
 
-== Installation
-sudo gem sources -a http://gems.github.com (you only have to do this once)
-sudo gem install igrigorik-language_detector
-
 == Usage
   require 'language_detector'
   
