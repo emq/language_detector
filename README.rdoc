@@ -19,8 +19,6 @@ sudo gem install igrigorik-language_detector
   p d.detect('this text is in English')
 
 == Thanks
-Kevin Burton (training data)
-- http://feedblog.org/2005/08/19/ngram-language-categorization-source/
-Feedbackmine
-- http://twitter.com/feedbackmine
+* Kevin Burton (training data): http://feedblog.org/2005/08/19/ngram-language-categorization-source/
+* Feedbackmine: http://twitter.com/feedbackmine
 

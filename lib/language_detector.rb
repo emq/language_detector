@@ -14,8 +14,8 @@ class LanguageDetector
     @profiles = load_model(type)
   end
 
-  def detect text
-    p = Profile.new(:text => text)
+  def detect(text)
+    p = LanguageDetector::Profile.new(:text => text)
     best_profile = nil
     best_distance = nil
 
@@ -27,7 +27,7 @@ class LanguageDetector
         best_profile = profile
       end
     end
-
+    p best_distance
     best_profile.name
   end
 
@@ -51,7 +51,7 @@ class LanguageDetector
       end
       lang.close
 
-      p = Profile.new(:name => language.split('/').last.split('-').first)
+      p = LanguageDetector::Profile.new(:name => language.split('/').last.split('-').first)
       p.ngrams = ngram
 
       profiles.push p
@@ -64,7 +64,8 @@ class LanguageDetector
 
   def self.train_fm
     # For a full list of ISO 639 language tags visit:
-    # http:#www.loc.gov/standards/iso639-2/englangn.html
+    # http://www.loc.gov/standards/iso639-2/englangn.html
+    # http://www.loc.gov/standards/iso639-2/php/English_list.php
 
     #LARGE profiles follow:
 
@@ -74,71 +75,62 @@ class LanguageDetector
     #always a good source of data.
     #
     # http:#en.wikipedia.org/wiki/World_War_II
+    # EU corpus: http://wt.jrc.it/lt/Acquis/
+    # 
 
     training_data = [
-      # af (afrikaans)
       [ "ar", "ar-utf8.txt", "utf8", "arabic" ],
       [ "bg", "bg-utf8.txt", "utf8", "bulgarian" ],
-      # bs (bosnian )
-      # ca (catalan)
       [ "cs", "cs-utf8.txt", "utf8", "czech" ],
-      # cy (welsh)
-      [ "da", "da-iso-8859-1.txt", "iso-8859-1", "danish" ],
+      [ "da", "da-utf8.txt", "utf8", "danish" ],
       [ "de", "de-utf8.txt", "utf8", "german" ],
       [ "el", "el-utf8.txt", "utf8", "greek" ],
-      [ "en", "en-iso-8859-1.txt", "iso-8859-1", "english" ],
+      [ "en", "en-utf8.txt", "utf8", "english" ],
       [ "et", "et-utf8.txt", "utf8", "estonian" ],
       [ "es", "es-utf8.txt", "utf8", "spanish" ],
       [ "fa", "fa-utf8.txt", "utf8", "farsi" ],
       [ "fi", "fi-utf8.txt", "utf8", "finnish" ],
       [ "fr", "fr-utf8.txt", "utf8", "french" ],
-      [ "fy", "fy-utf8.txt", "utf8", "frisian" ],
       [ "ga", "ga-utf8.txt", "utf8", "irish" ],
-      #gd (gaelic)
-      #haw (hawaiian)
       [ "he", "he-utf8.txt", "utf8", "hebrew" ],
       [ "hi", "hi-utf8.txt", "utf8", "hindi" ],
       [ "hr", "hr-utf8.txt", "utf8", "croatian" ],
-      #id (indonesian)
-      [ "io", "io-utf8.txt", "utf8", "ido" ],
-      [ "is", "is-utf8.txt", "utf8", "icelandic" ],
       [ "it", "it-utf8.txt", "utf8", "italian" ],
       [ "ja", "ja-utf8.txt", "utf8", "japanese" ],
       [ "ko", "ko-utf8.txt", "utf8", "korean" ],
-      #ku (kurdish)
-      #la ?
-      #lb ?
-      #lt (lithuanian)
-      #lv (latvian)
       [ "hu", "hu-utf8.txt", "utf8", "hungarian" ],
-      #mk (macedonian)
-      #ms (malay)
-      #my (burmese)
-      [ "nl", "nl-iso-8859-1.txt", "iso-8859-1", "dutch" ],
+      [ "tk", "tk-utf8.txt", "utf8", "turkish" ],
+      [ "nl", "nl-utf8.txt", "utf8", "dutch" ],
       [ "no", "no-utf8.txt", "utf8", "norwegian" ],
       [ "pl", "pl-utf8.txt", "utf8", "polish" ],
       [ "pt", "pt-utf8.txt", "utf8", "portuguese" ],
       [ "ro", "ro-utf8.txt", "utf8", "romanian" ],
       [ "ru", "ru-utf8.txt", "utf8", "russian" ],
       [ "sl", "sl-utf8.txt", "utf8", "slovenian" ],
-      #sr (serbian)
-      [ "sv", "sv-iso-8859-1.txt", "iso-8859-1", "swedish" ],
-      #[ "sv", "sv-utf8.txt", "utf8", "swedish" ],
+      [ "sv", "sv-utf8.txt", "utf8", "swedish" ],
       [ "th", "th-utf8.txt", "utf8", "thai" ],
-      #tl (tagalog)
-      #ty (tahitian)
       [ "uk", "uk-utf8.txt", "utf8", "ukraninan" ],
       [ "vi", "vi-utf8.txt", "utf8", "vietnamese" ],
-      #wa (walloon)
-      #yi (yidisih)
       [ "zh", "zh-utf8.txt", "utf8", "chinese" ]
+      # id (indonesian)
+      # ku (kurdish)
+      # lt (lithuanian)
+      # lv (latvian)
+      # mk (macedonian)
+      # ms (malay)
+      # sr (serbian)
+      # my (burmese)
+      # [ "fy", "fy-utf8.txt", "utf8", "frisian" ],
+      # [ "io", "io-utf8.txt", "utf8", "ido" ],
+      # [ "is", "is-utf8.txt", "utf8", "icelandic" ],
     ]
 
     profiles = []
     training_data.each do |data|
-      p = Profile.new(:name => data.last, :file => data[1])
+      p = LanguageDetector::Profile.new(:name => data.last, :file => data[1])
       profiles.push p
     end
+
     puts 'saving model...'
     filename = File.expand_path(File.join(File.dirname(__FILE__), "model-fm.yml"))
     File.open(filename, 'w') {|f| YAML.dump(profiles, f)}
@@ -150,7 +142,7 @@ class LanguageDetector
   end
 end
 
-class Profile
+class LanguageDetector::Profile
   LIMIT = 1500
   PUNCTUATION_REGEX = /[\W^_\d]+/
   attr_accessor :ngrams, :name
