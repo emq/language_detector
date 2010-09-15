@@ -27,7 +27,7 @@ class LanguageDetector
         best_profile = profile
       end
     end
-    p best_distance
+    #p best_distance
     best_profile.name
   end
 
