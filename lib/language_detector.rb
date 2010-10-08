@@ -10,7 +10,7 @@ class LanguageDetector
   # Supports two ngram databases:
   # - fm - built from scratch texts included with gem
   # - tc - textcat ngram database
-  def initialize(type='tc')
+  def initialize(type='fm')
     @profiles = load_model(type)
   end
 
