@@ -1,3 +1,4 @@
+# encoding: utf-8
 require 'yaml'
 
 if RUBY_VERSION < '1.9'
@@ -20,7 +21,7 @@ class LanguageDetector
     best_distance = nil
 
     @profiles.each do |profile|
-      distance = p.compute_distance(profile)
+      distance = profile.compute_distance(p)
 
       if !best_distance or distance < best_distance
         best_distance = distance
@@ -222,14 +223,25 @@ class LanguageDetector::Profile
 end
 
 if $0 == __FILE__
-  if ARGV.length == 1
-    if 'train-fm' == ARGV[0]
-      LanguageDetector.train_fm
-    elsif 'train-tc' == ARGV[0]
-      LanguageDetector.train_tc
-    end
+  if 'train-fm' == ARGV[0]
+    LanguageDetector.train_fm
+  elsif 'train-tc' == ARGV[0]
+    LanguageDetector.train_tc
   else
-    d = LanguageDetector.new()
-    p d.detect("what language is this? can you guess? That's a hard question")
+    type = ARGV[0] || 'fm'
+    d = LanguageDetector.new(type)
+    p type
+    if ARGV.size > 1
+      p d.detect ARGV[1..-1].join(' ')
+    else
+      strings = <<-_EOF_.split(/\n/)
+What language is this? Can you guess? That's a hard question indeed.
+Welche Sprache ist das? Errätst Du es? Wirklich eine schwierige Frage.
+Quelle langue est-ce? Pouvez-vous deviner? C'est une question difficile en effet.
+      _EOF_
+      strings.each do |x|
+        puts "#{x.inspect} => #{d.detect(x)}"
+      end
+    end
   end
 end
