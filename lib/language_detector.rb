@@ -37,8 +37,8 @@ class LanguageDetector
     languages.each do |language|
       ngram = {}
       rang = 1
-
-      lang = File.open("#{language}.lm", "r")
+      p language
+      lang = File.open("#{language}.lm", "r:iso-8859-1")
       lang.each_line do |line|
 
         line = line.chomp
@@ -110,7 +110,7 @@ class LanguageDetector
       [ "th", "th-utf8.txt", "utf8", "thai" ],
       [ "uk", "uk-utf8.txt", "utf8", "ukraninan" ],
       [ "vi", "vi-utf8.txt", "utf8", "vietnamese" ],
-      [ "zh", "zh-utf8.txt", "utf8", "chinese" ]
+      [ "zh", "zh-utf8.txt", "utf8", "chinese" ],
       # id (indonesian)
       # ku (kurdish)
       # lt (lithuanian)
