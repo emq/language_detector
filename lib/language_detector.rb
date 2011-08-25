@@ -27,8 +27,7 @@ class LanguageDetector
         best_profile = profile
       end
     end
-    #p best_distance
-    best_profile.name
+    best_profile
   end
 
   def self.train_tc
@@ -215,6 +214,10 @@ class LanguageDetector::Profile
     end
 
     counts
+  end
+  
+  def to_s
+    name
   end
 end
 
