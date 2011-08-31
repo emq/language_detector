@@ -79,39 +79,39 @@ class LanguageDetector
     # 
 
     training_data = [
-      [ "ar", "ar-utf8.txt", "utf8", "arabic" ],
-      [ "bg", "bg-utf8.txt", "utf8", "bulgarian" ],
-      [ "cs", "cs-utf8.txt", "utf8", "czech" ],
-      [ "da", "da-utf8.txt", "utf8", "danish" ],
-      [ "de", "de-utf8.txt", "utf8", "german" ],
-      [ "el", "el-utf8.txt", "utf8", "greek" ],
-      [ "en", "en-utf8.txt", "utf8", "english" ],
-      [ "et", "et-utf8.txt", "utf8", "estonian" ],
-      [ "es", "es-utf8.txt", "utf8", "spanish" ],
-      [ "fa", "fa-utf8.txt", "utf8", "farsi" ],
-      [ "fi", "fi-utf8.txt", "utf8", "finnish" ],
-      [ "fr", "fr-utf8.txt", "utf8", "french" ],
-      [ "ga", "ga-utf8.txt", "utf8", "irish" ],
-      [ "he", "he-utf8.txt", "utf8", "hebrew" ],
-      [ "hi", "hi-utf8.txt", "utf8", "hindi" ],
-      [ "hr", "hr-utf8.txt", "utf8", "croatian" ],
-      [ "it", "it-utf8.txt", "utf8", "italian" ],
-      [ "ja", "ja-utf8.txt", "utf8", "japanese" ],
-      [ "ko", "ko-utf8.txt", "utf8", "korean" ],
-      [ "hu", "hu-utf8.txt", "utf8", "hungarian" ],
-      [ "tk", "tk-utf8.txt", "utf8", "turkish" ],
-      [ "nl", "nl-utf8.txt", "utf8", "dutch" ],
-      [ "no", "no-utf8.txt", "utf8", "norwegian" ],
-      [ "pl", "pl-utf8.txt", "utf8", "polish" ],
-      [ "pt", "pt-utf8.txt", "utf8", "portuguese" ],
-      [ "ro", "ro-utf8.txt", "utf8", "romanian" ],
-      [ "ru", "ru-utf8.txt", "utf8", "russian" ],
-      [ "sl", "sl-utf8.txt", "utf8", "slovenian" ],
-      [ "sv", "sv-utf8.txt", "utf8", "swedish" ],
-      [ "th", "th-utf8.txt", "utf8", "thai" ],
-      [ "uk", "uk-utf8.txt", "utf8", "ukraninan" ],
-      [ "vi", "vi-utf8.txt", "utf8", "vietnamese" ],
-      [ "zh", "zh-utf8.txt", "utf8", "chinese" ],
+      [ "ar", "ar-utf8.txt", "utf-8", "arabic" ],
+      [ "bg", "bg-utf8.txt", "utf-8", "bulgarian" ],
+      [ "cs", "cs-utf8.txt", "utf-8", "czech" ],
+      [ "da", "da-utf8.txt", "utf-8", "danish" ],
+      [ "de", "de-utf8.txt", "utf-8", "german" ],
+      [ "el", "el-utf8.txt", "utf-8", "greek" ],
+      [ "en", "en-utf8.txt", "utf-8", "english" ],
+      [ "et", "et-utf8.txt", "utf-8", "estonian" ],
+      [ "es", "es-utf8.txt", "utf-8", "spanish" ],
+      [ "fa", "fa-utf8.txt", "utf-8", "farsi" ],
+      [ "fi", "fi-utf8.txt", "utf-8", "finnish" ],
+      [ "fr", "fr-utf8.txt", "utf-8", "french" ],
+      [ "ga", "ga-utf8.txt", "utf-8", "irish" ],
+      [ "he", "he-utf8.txt", "utf-8", "hebrew" ],
+      [ "hi", "hi-utf8.txt", "utf-8", "hindi" ],
+      [ "hr", "hr-utf8.txt", "utf-8", "croatian" ],
+      [ "it", "it-utf8.txt", "utf-8", "italian" ],
+      [ "ja", "ja-utf8.txt", "utf-8", "japanese" ],
+      [ "ko", "ko-utf8.txt", "utf-8", "korean" ],
+      [ "hu", "hu-utf8.txt", "utf-8", "hungarian" ],
+      [ "tk", "tk-utf8.txt", "utf-8", "turkish" ],
+      [ "nl", "nl-utf8.txt", "utf-8", "dutch" ],
+      [ "no", "no-utf8.txt", "utf-8", "norwegian" ],
+      [ "pl", "pl-utf8.txt", "utf-8", "polish" ],
+      [ "pt", "pt-utf8.txt", "utf-8", "portuguese" ],
+      [ "ro", "ro-utf8.txt", "utf-8", "romanian" ],
+      [ "ru", "ru-utf8.txt", "utf-8", "russian" ],
+      [ "sl", "sl-utf8.txt", "utf-8", "slovenian" ],
+      [ "sv", "sv-utf8.txt", "utf-8", "swedish" ],
+      [ "th", "th-utf8.txt", "utf-8", "thai" ],
+      [ "uk", "uk-utf8.txt", "utf-8", "ukraninan" ],
+      [ "vi", "vi-utf8.txt", "utf-8", "vietnamese" ],
+      [ "zh", "zh-utf8.txt", "utf-8", "chinese" ],
       # id (indonesian)
       # ku (kurdish)
       # lt (lithuanian)
@@ -120,14 +120,15 @@ class LanguageDetector
       # ms (malay)
       # sr (serbian)
       # my (burmese)
-      # [ "fy", "fy-utf8.txt", "utf8", "frisian" ],
-      # [ "io", "io-utf8.txt", "utf8", "ido" ],
-      # [ "is", "is-utf8.txt", "utf8", "icelandic" ],
+      # [ "fy", "fy-utf8.txt", "utf-8", "frisian" ],
+      # [ "io", "io-utf8.txt", "utf-8", "ido" ],
+      # [ "is", "is-utf8.txt", "utf-8", "icelandic" ],
     ]
 
     profiles = []
     training_data.each do |data|
-      p = LanguageDetector::Profile.new(:name => data.last, :file => data[1])
+      puts "Training #{data[3]} (#{data[0]}) from #{data[1]} (#{data[2]})"
+      p = LanguageDetector::Profile.new(:code => data[0], :file => data[1], :encoding => data[2], :name => data[3])
       profiles.push p
     end
 
@@ -144,13 +145,15 @@ end
 
 class LanguageDetector::Profile
   LIMIT = 1500
-  PUNCTUATION_REGEX = /[\W^_\d]+/
-  attr_accessor :ngrams, :name
+  PUNCTUATION_REGEX = /\p{^alnum}+/
+  attr_accessor :ngrams, :name, :code
 
   def initialize(*args)
     args = args.first
 
     @name = args[:name] || ""
+    @code = args[:code] || ""
+    @encoding = args[:encoding] || ""
     @ngrams = {}
 
     init_with_string(args[:text]) if args[:text]
@@ -175,8 +178,7 @@ class LanguageDetector::Profile
     ngram_count = Hash.new(0)
 
     path = File.expand_path(File.join(File.dirname(__FILE__), "training_data/" + filename))
-    File.open(path).each_line {|line| generate_ngrams(line, ngram_count) }
-    puts "training with " + path
+    File.open(path, "r:#{@encoding}").each_line {|line| generate_ngrams(line, ngram_count) }
 
     ngram_count.sort {|a,b| b[1] <=> a[1]}.each_with_index do |t, i|
       ngrams[t[0]] = (i+1)
